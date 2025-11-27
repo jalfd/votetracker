@@ -115,3 +115,5 @@ export function setupConfigPage() {
       e.preventDefault();
     });
 }
+
+setupConfigPage();

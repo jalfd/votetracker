@@ -11,9 +11,9 @@
   ],
   "scripts": {
     "test": "tsx --test",
-    "build": "esbuild --format=esm --bundle src/main.ts --outdir=dist/www --minify --sourcemap",
+    "build": "esbuild --format=esm --bundle src/config-script.ts --bundle src/votes-script.ts --outdir=dist/www --minify --sourcemap",
     "install": "npm run build && cp -rf static/index.html dist/www/",
-    "serve": "npm run install && esbuild --serve --servedir=dist/www --format=esm --bundle src/main.ts --outdir=dist/www --minify --sourcemap"
+    "serve": "npm run install && esbuild --serve --servedir=dist/www --format=esm --bundle src/config-script.ts --bundle src/votes-script.ts --outdir=dist/www --minify --sourcemap"
   },
   "devDependencies": {
     "@tsconfig/node-ts": "^23.6.1",

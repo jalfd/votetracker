@@ -1,7 +1,7 @@
-import {findTarget, sleep} from "./common.js";
+import { findTarget, sleep } from "./common.js";
 
 export function setupVotePage() {
-// sync from fragment
+  // sync from fragment
 
   document
     .querySelector<HTMLDivElement>(".flex-container")
@@ -13,3 +13,5 @@ export function setupVotePage() {
       })
     );
 }
+
+setupVotePage();

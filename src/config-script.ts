@@ -114,6 +114,9 @@ export function setupConfigPage() {
     ?.addEventListener("selectstart", function (e) {
       e.preventDefault();
     });
+
+    const submit = document.querySelector<HTMLDivElement>("#submit");
+    submit?.addEventListener("pointerdown", onSubmit);
 }
 
 setupConfigPage();

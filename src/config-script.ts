@@ -57,7 +57,7 @@ function loadFromLocalStorage() {
   return daggers;
 }
 
-function setupConfigPage() {
+export function setupConfigPage() {
   const daggers = loadFromLocalStorage();
   const elem = document.getElementById("names-input") as HTMLTextAreaElement;
 
@@ -115,5 +115,3 @@ function setupConfigPage() {
       e.preventDefault();
     });
 }
-
-document.addEventListener("load", setupConfigPage);

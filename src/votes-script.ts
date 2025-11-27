@@ -1,6 +1,6 @@
 import {findTarget, sleep} from "./common.js";
 
-function setupVotePage() {
+export function setupVotePage() {
 // sync from fragment
 
   document
@@ -13,5 +13,3 @@ function setupVotePage() {
       })
     );
 }
-
-document.addEventListener("load", setupVotePage);

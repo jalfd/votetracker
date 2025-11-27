@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0px;
+        padding: 0px;
+      }
+      body {
+        display: flex;
+      }
+
+      #tiles-container {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+      }
+
+      #tiles-container > div {
+        background-color: #c9d1cb;
+        margin: 10px;
+        padding: 20px;
+        flex-basis: 0;
+        width: 100%;
+        text-align: center;
+      }
+
+      #tiles-container > div > h3 {
+        visibility: hidden;
+      }
+      #tiles-container > div.dagger > h3 {
+        visibility: visible;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="input-container">
+      <textarea id="names-input" rows="20"></textarea>
+    </div>
+    <div id="tiles-container"></div>
+
+    <a href="votes.html">go to votes</a>
+
+    <script src="config-script.js" type="module"></script>
+  </body>
+</html>

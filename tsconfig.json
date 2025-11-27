@@ -1,0 +1,26 @@
+{
+    "extends": [
+        "@tsconfig/strictest/tsconfig",
+        "@tsconfig/node24/tsconfig.json",
+        "@tsconfig/node-ts/tsconfig.json"
+    ],
+    "compilerOptions": {
+        "composite": true,
+        "sourceMap": true,
+        "outDir": "dist",
+        "moduleResolution": "bundler",
+        "module": "preserve",
+        "erasableSyntaxOnly": false,
+        "lib": [
+            "dom",
+            "es2024",
+            "ESNext.Array",
+            "ESNext.Collection",
+            "ESNext.Iterator",
+            "ESNext.Promise"
+        ]
+    },
+    "include": [
+        "src/*.ts"
+    ]
+}

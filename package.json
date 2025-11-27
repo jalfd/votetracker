@@ -1,0 +1,30 @@
+{
+  "name": "traitorvotes",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "dist/www/main.js",
+  "files": [
+    "dist/www/*.js"
+  ],
+  "scripts": {
+    "test": "tsx --test",
+    "build": "esbuild --format=esm --bundle src/main.ts --outdir=dist/www --minify --sourcemap",
+    "install": "npm run build && cp -rf static/index.html dist/www/",
+    "serve": "npm run install && esbuild --serve --servedir=dist/www --format=esm --bundle src/main.ts --outdir=dist/www --minify --sourcemap"
+  },
+  "devDependencies": {
+    "@tsconfig/node-ts": "^23.6.1",
+    "@tsconfig/node24": "^24.0.1",
+    "@tsconfig/strictest": "^2.0.6",
+    "@types/node": "^24.9.1",
+    "esbuild": "^0.25.11",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "zod": "^4.1.12"
+  }
+}

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0px;
+        padding: 0px;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+      }
+      .flex-container {
+        display: flex;
+        flex-wrap: wrap;
+        background-color: #32a852;
+      }
+      .flex-container > div {
+        background-color: #c9d1cb;
+        margin: 10px;
+        padding: 20px;
+        flex-basis: 200px;
+      }
+      .flex-container > div:hover {
+        background-color: #e0cdf1;
+      }
+      .info-container {
+        background-color: #84e2b4;
+        flex: 1 1 auto;
+        overflow: auto;
+        min-height: 100px;
+        display: flex;
+        flex-wrap: nowrap;
+      }
+      .info-container div {
+        width: 33%;
+        background-color: #b3dd9f;
+        padding: 1em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="flex-container">
+      <div>
+        <div>Knud</div>
+        <div>Stemmer: 2</div>
+      </div>
+      <div>Bob</div>
+      <div>Olga</div>
+      <div>Rigmor</div>
+      <div>Gertrud</div>
+      <div>Helga</div>
+    </div>
+    <div class="info-container">
+      <div>
+        <h1>Afgivne Stemmer</h1>
+        <div>Olga stemte på Rigmor</div>
+      </div>
+      <div>
+        <h1>Flest Modtagne Stemmer</h1>
+        <div>Olga: 8</div>
+        <div>Bob: 7</div>
+      </div>
+      <div>
+        <h1>Varsler</h1>
+        <div>Hvis {next} stemmer på Olga er hun forvist</div>
+      </div>
+    </div>
+    <script src="votes-script.js" type="module"></script>
+
+  </body>
+</html>

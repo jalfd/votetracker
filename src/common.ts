@@ -46,10 +46,20 @@ export function createTile(player: Player) {
   const tile = document.createElement("div");
   const tileName = document.createElement("h2");
   const tileSub = document.createElement("h3");
+  const voteRow = document.createElement("div");
+  const voteLabel = document.createElement("span");
+  const voteCount = document.createElement("span");
   tileName.textContent = player.name;
   tileSub.textContent = "🗡";
   tile.appendChild(tileName);
   tile.appendChild(tileSub);
+  voteLabel.textContent = 'Modtagne Stemmer:';
+  voteCount.classList.add("voteCount");
+  voteCount.textContent = '0';
+  voteRow.appendChild(voteLabel);
+  voteRow.appendChild(voteCount);
+  tile.appendChild(voteRow);
+
   if (player.votes === 2) {
     tile.classList.add("dagger");
   }

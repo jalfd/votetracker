@@ -22,6 +22,10 @@ function tiles() {
   return Array.from(document.querySelectorAll<Tile>(".flex-container > div"));
 }
 
+function countVotesFor(name: string) {
+  return state.filter(player => player.votedFor === name).map(player => player.votes).reduce((acc, num) => acc + num);
+}
+
 function nextVoter(): Player | undefined {
   for (const item of state) {
     if (item.votedFor === undefined) {
@@ -32,6 +36,10 @@ function nextVoter(): Player | undefined {
 }
 function nextVoterTile(): Tile | undefined {
   return tileFromName(nextVoter()?.name);
+}
+
+function voteCountElement(tile: Tile | undefined) {
+  return tile?.querySelector<HTMLSpanElement>(".voteCount");
 }
 
 function onStateChanged() {
@@ -49,6 +57,16 @@ for (const item of state) {
 }
 // then add nextvoter status
 nextVoterTile()?.classList.add("voter");
+
+const votesReceived: Record<string, number> = {};
+for (const player of state) {
+  const count = countVotesFor(player.name);
+  votesReceived[player.name] = count;
+  const counter = voteCountElement(tileFromName(player.name));
+  if (counter) {
+    counter.textContent = count + '';
+  }
+}
 // update info panels
   // list cast votes (with undo button)
   // list top voted

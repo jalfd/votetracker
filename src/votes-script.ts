@@ -194,9 +194,16 @@ function onStateChanged() {
           } stemmer på ${item} er han/hun forvist`;
           noticesContainer.appendChild(notice);
         }
-        for (const [banishee, unless] of Object.entries(canProtectFromBanishment)) {
+        for (const [banishee, unless] of Object.entries(
+          canProtectFromBanishment
+        )) {
           const notice = document.createElement("div");
-          const prettyUnless = unless.slice(0, -1).join(', ') + ' eller ' + unless[unless.length - 1];
+          const prettyUnless =
+            unless.length === 1
+              ? unless[0]
+              : unless.slice(0, -1).join(", ") +
+                " eller " +
+                unless[unless.length - 1];
           notice.textContent = `Hvis ${
             nextVoter()?.name
           } ikke stemmer på ${prettyUnless} er ${banishee} forvist`;

@@ -53,7 +53,7 @@ export function createTile(player: Player) {
   tileSub.textContent = "🗡";
   tile.appendChild(tileName);
   tile.appendChild(tileSub);
-  voteLabel.textContent = 'Stemmer:';
+  voteLabel.textContent = '🗳️ ';
   voteCount.classList.add("voteCount");
   voteCount.textContent = '0';
   voteRow.appendChild(voteLabel);

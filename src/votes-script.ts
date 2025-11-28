@@ -110,15 +110,16 @@ function onStateChanged() {
   // list top voted
   const voteCountArray = Object.entries(votesReceived)
     .map(([name, count]) => ({ name, count }))
-    .filter((player) => player.count !== 0)
     .toSorted((lhs, rhs) => rhs.count - lhs.count);
   const voteCountContainer =
     document.querySelector<HTMLDivElement>("#vote-ranking");
   voteCountContainer?.replaceChildren();
   for (const { name, count } of voteCountArray) {
+    if (count !== 0) {
     const item = document.createElement("div");
     item.textContent = `${name}: ${count} stemmer`;
     voteCountContainer?.appendChild(item);
+    }
   }
 
   const remainingVotes = state

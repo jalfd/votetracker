@@ -7,12 +7,11 @@
       }
       body {
         display: flex;
-        background-color: #9BC4CB;
+        background-color: #CFEBDF;
       }
       #tiles-container {
         display: flex;
         flex-wrap: wrap;
-        background-color: #CFEBDF;
         flex-basis: 0;
         flex-grow: 1;
         align-items: flex-start;
@@ -23,6 +22,7 @@
         flex-basis: 0;
         flex-grow: 0;
         text-align: center;
+        background-color: #9BC4CB;
       }
       #tiles-container > div.voter {
         background-color: #76D5E6;

@@ -80,19 +80,30 @@ function onStateChanged() {
   // update info panels
   // list cast votes (with undo button)
   {
+    const voters = state
+      .filter((player) => player.votedFor !== undefined)
+      .map((player) => ({ voter: player.name, votee: player.votedFor! }))
+      .toSorted((lhs, rhs) => lhs.voter.localeCompare(rhs.voter));
+
     const voteStrings = state
       .filter((player) => player.votedFor !== undefined)
-      .map((player) => `${player.name} stemte på ${player.votedFor}`).toSorted();
+      .map((player) => `${player.name} stemte på ${player.votedFor}`)
+      .toSorted();
     const voteTrackerContainer =
       document.querySelector<HTMLDivElement>("#vote-tracker");
     voteTrackerContainer?.replaceChildren();
-    for (const str of voteStrings) {
+    for (const voterInfo of voters) {
       const root = document.createElement("div");
-      const text = document.createElement("span");
+      const voter = document.createElement("span");
+      const remainder = document.createElement("span");
       const tip = document.createElement("span");
-      text.textContent = str;
+      voter.textContent = voterInfo.voter;
+      voter.classList.add("voter");
+      remainder.textContent = ` stemte på ${voterInfo.votee}`;
       tip.textContent = "Slet?";
-      root.appendChild(text);
+      tip.classList.add("deleteVote");
+      root.appendChild(voter);
+      root.appendChild(remainder);
       root.appendChild(tip);
       voteTrackerContainer?.appendChild(root);
       // todo: set up delete click event
@@ -100,11 +111,13 @@ function onStateChanged() {
   }
   // list top voted
   {
-    const voteCountArray = Object.entries(votesReceived).map(([name, count]) => ({name, count }));
+    const voteCountArray = Object.entries(votesReceived).map(
+      ([name, count]) => ({ name, count })
+    );
     const voteCountContainer =
       document.querySelector<HTMLDivElement>("#vote-ranking");
     voteCountContainer?.replaceChildren();
-    for (const {name, count} of voteCountArray.toSorted()) {
+    for (const { name, count } of voteCountArray.toSorted()) {
       const item = document.createElement("div");
       item.textContent = `${name}: ${count} stemmer`;
       voteCountContainer?.appendChild(item);
@@ -128,6 +141,20 @@ export function setupVotePage() {
           recipient.votes += voter.votes;
           voter.votedFor = recipient.name;
         }
+        onStateChanged();
+      })
+    );
+
+  document
+    .querySelector<HTMLDivElement>(".vote-tracker")
+    ?.addEventListener("pointerdown", async (evt) =>
+      findTarget(evt, ".vote-tracker > div", async (target) => {
+        const voterName = target.querySelector(".voter")?.textContent;
+        const voter = state.find((player) => player.name === voterName);
+        if (voter) {
+          voter.votedFor = undefined;
+        }
+
         onStateChanged();
       })
     );

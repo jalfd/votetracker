@@ -5,7 +5,8 @@
     <style>
       html,
       body {
-        height: 100%;
+        height: 100vh;
+        max-width: 100vw;
         margin: 0px;
         padding: 0px;
       }
@@ -13,31 +14,39 @@
         display: flex;
         flex-direction: column;
       }
-      .flex-container {
+      #tiles-container {
         display: flex;
         flex-wrap: wrap;
         background-color: #32a852;
       }
-      .flex-container > div {
+      #tiles-container > div {
         background-color: #beb7df;
         margin: 10px;
         padding: 20px;
-        flex-basis: 200px;
+        flex-basis: 0;
+        text-align: center;
       }
-      .flex-container > div.voted {
-        background-color: #aba9bf;
-            }
-      .flex-container > div:not(.voted):hover {
-        background-color: #d4f2d2;
+      #tiles-container > div > h3,
+      h2 {
+        padding: 0;
+        margin: 0;
       }
-      #flex-container > div > h3 {
+      #tiles-container > div > h3 {
         visibility: hidden;
       }
-      #flex-container > div.dagger > h3 {
+      #tiles-container > div.dagger > h3 {
         visibility: visible;
       }
+      #tiles-container > div.voter {
+        border-style: solid;
+        border-width: 1px;
+        border-color: black;
+      }
+      #tiles-container > div.voted {
+        background-color: #aba9bf;
+      }
 
-      .info-container {
+      #info-container {
         background-color: #84e2b4;
         flex: 1 1 auto;
         overflow: auto;
@@ -45,30 +54,26 @@
         display: flex;
         flex-wrap: nowrap;
       }
-      .info-container div {
-        width: 33%;
+      #info-container > div {
+        width: 33vw;
         background-color: #b3dd9f;
         padding: 1em;
       }
-      .vote-tracker > div:hover > .deleteVote {
-        visibility: "visible";
-      }
-      .vote-tracker > div > .deleteVote {
-        visibility: "hidden";
+      #info-container > div > div {
+        width: 100%;
       }
     </style>
   </head>
   <body>
-    <div class="flex-container">
-    </div>
-    <div class="info-container">
+    <div id="tiles-container"></div>
+    <div id="info-container">
       <div>
         <h1>Afgivne Stemmer</h1>
-      <div id="vote-tracker"></div>
+        <div id="vote-tracker"></div>
       </div>
       <div>
         <h1>Flest Modtagne Stemmer</h1>
-      <div id="vote-ranking"></div>
+        <div id="vote-ranking"></div>
       </div>
       <div>
         <h1>Varsler</h1>
@@ -76,6 +81,5 @@
       </div>
     </div>
     <script src="votes-script.js" type="module"></script>
-
   </body>
 </html>

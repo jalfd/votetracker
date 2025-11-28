@@ -42,7 +42,7 @@ function onSubmit() {
   }
   localStorage.setItem("text", textArea.value);
   localStorage.setItem("daggers", JSON.stringify(daggers));
-  window.location.href = `votes.html#${serializeFromDom()}`;
+  window.location.href = `votes.html?${serializeFromDom()}`;
 }
 
 function loadFromLocalStorage() {
@@ -74,9 +74,9 @@ export function setupConfigPage() {
       }
     }
 
-    const tilesContainer = document.getElementById(
-      "tiles-container"
-    ) as HTMLDivElement;
+    const tilesContainer = document.querySelector<HTMLDivElement>(
+      "#tiles-container"
+    )!;
     tilesContainer.replaceChildren();
     for (const name of names) {
       tilesContainer.appendChild(createTile(playerSchema.parse({name})));

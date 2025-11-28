@@ -18,7 +18,7 @@ export function serialize(state: Players) {
 }
 export function deserialize(str: string) {
   const json = atob(
-    str.replaceAll("#", "").replaceAll("-", "+").replaceAll("_", "/")
+    str.replaceAll(/\?|#/g, "").replaceAll("-", "+").replaceAll("_", "/")
   );
 
   return stateSchema.parse(JSON.parse(json));
@@ -53,7 +53,7 @@ export function createTile(player: Player) {
   tileSub.textContent = "🗡";
   tile.appendChild(tileName);
   tile.appendChild(tileSub);
-  voteLabel.textContent = 'Modtagne Stemmer:';
+  voteLabel.textContent = 'Stemmer:';
   voteCount.classList.add("voteCount");
   voteCount.textContent = '0';
   voteRow.appendChild(voteLabel);

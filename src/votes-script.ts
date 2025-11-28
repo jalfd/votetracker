@@ -3,7 +3,6 @@ import {
   deserialize,
   findTarget,
   serialize,
-  sleep,
   type Player,
   type Players,
 } from "./common.js";
@@ -27,14 +26,14 @@ function tileFromName(name: string | undefined) {
 }
 
 function tiles() {
-  return Array.from(document.querySelectorAll<Tile>(".flex-container > div"));
+  return Array.from(document.querySelectorAll<Tile>("#tiles-container > div"));
 }
 
 function countVotesFor(name: string) {
   return state
     .filter((player) => player.votedFor === name)
     .map((player) => player.votes)
-    .reduce((acc, num) => acc + num);
+    .reduce((acc, num) => acc + num, 0);
 }
 
 function nextVoter(): Player | undefined {
@@ -54,11 +53,15 @@ function voteCountElement(tile: Tile | undefined) {
 }
 
 function onStateChanged() {
-  // update fragment
-  document.location.hash = serialize(state);
+  // update url
+  history.replaceState(
+    state,
+    "",
+    new URL(`?${serialize(state)}`, document.location.href)
+  );
 
   // first, nuke all tiles
-  const container = document.querySelector<HTMLDivElement>(".flex-container");
+  const container = document.querySelector<HTMLDivElement>("#tiles-container");
 
   container?.replaceChildren();
   // then rebuild tiles
@@ -71,6 +74,7 @@ function onStateChanged() {
   const votesReceived: Record<string, number> = {};
   for (const player of state) {
     const count = countVotesFor(player.name);
+    console.log(`player ${player.name} received ${count} votes`);
     votesReceived[player.name] = count;
     const counter = voteCountElement(tileFromName(player.name));
     if (counter) {
@@ -82,13 +86,8 @@ function onStateChanged() {
   {
     const voters = state
       .filter((player) => player.votedFor !== undefined)
-      .map((player) => ({ voter: player.name, votee: player.votedFor! }))
-      .toSorted((lhs, rhs) => lhs.voter.localeCompare(rhs.voter));
+      .map((player) => ({ voter: player.name, votee: player.votedFor! }));
 
-    const voteStrings = state
-      .filter((player) => player.votedFor !== undefined)
-      .map((player) => `${player.name} stemte på ${player.votedFor}`)
-      .toSorted();
     const voteTrackerContainer =
       document.querySelector<HTMLDivElement>("#vote-tracker");
     voteTrackerContainer?.replaceChildren();
@@ -100,55 +99,110 @@ function onStateChanged() {
       voter.textContent = voterInfo.voter;
       voter.classList.add("voter");
       remainder.textContent = ` stemte på ${voterInfo.votee}`;
-      tip.textContent = "Slet?";
+      tip.textContent = "❌";
       tip.classList.add("deleteVote");
       root.appendChild(voter);
       root.appendChild(remainder);
       root.appendChild(tip);
       voteTrackerContainer?.appendChild(root);
-      // todo: set up delete click event
     }
   }
   // list top voted
-  {
-    const voteCountArray = Object.entries(votesReceived).map(
-      ([name, count]) => ({ name, count })
-    );
-    const voteCountContainer =
-      document.querySelector<HTMLDivElement>("#vote-ranking");
-    voteCountContainer?.replaceChildren();
-    for (const { name, count } of voteCountArray.toSorted()) {
-      const item = document.createElement("div");
-      item.textContent = `${name}: ${count} stemmer`;
-      voteCountContainer?.appendChild(item);
+  const voteCountArray = Object.entries(votesReceived)
+    .map(([name, count]) => ({ name, count }))
+    .filter((player) => player.count !== 0)
+    .toSorted((lhs, rhs) => rhs.count - lhs.count);
+  const voteCountContainer =
+    document.querySelector<HTMLDivElement>("#vote-ranking");
+  voteCountContainer?.replaceChildren();
+  for (const { name, count } of voteCountArray) {
+    const item = document.createElement("div");
+    item.textContent = `${name}: ${count} stemmer`;
+    voteCountContainer?.appendChild(item);
+  }
+
+  const remainingVotes = state
+    .filter((player) => player.votedFor === undefined)
+    .map((player) => player.votes)
+    .reduce((acc, val) => acc + val, 0);
+  const mostVotes = voteCountArray[0];
+  const nextVoteCount = nextVoter()?.votes ?? 0;
+
+  const noticesContainer = document.querySelector<HTMLDivElement>("#notices")!;
+  noticesContainer.replaceChildren();
+
+  if (remainingVotes === nextVoteCount) {
+    if (remainingVotes === 0) {
+      const votingComplete = document.createElement("div");
+      votingComplete.textContent = "Alle har stemt!";
+      noticesContainer.appendChild(votingComplete);
+    } else {
+      // final vote
+      const finalVote = document.createElement("div");
+      finalVote.textContent = "Sidste stemme!";
+      noticesContainer.appendChild(finalVote);
+    }
+  } else {
+    const remainingVotesNotice = document.createElement("div");
+    remainingVotesNotice.textContent = `${remainingVotes} stemmer tilbage`;
+    noticesContainer.appendChild(remainingVotesNotice);
+  }
+
+  if (mostVotes !== undefined) {
+    if (voteCountArray[1] !== undefined) {
+      // if no one can catch up to mostVotes
+      if (voteCountArray[1].count + nextVoteCount < mostVotes.count) {
+        // Someone is banished
+        const isBanishedNotice = document.createElement("div");
+        isBanishedNotice.textContent = `${mostVotes.name} er forvist`;
+        noticesContainer.appendChild(isBanishedNotice);
+      } else {
+        // who can be banished if they get the next vote?
+        for (let i = 0; i < voteCountArray.length; ++i) {
+          const current = voteCountArray[i]!;
+          const reference = i === 0 ? voteCountArray[1] : voteCountArray[0]!;
+          if (
+            current.count + nextVoteCount >
+            reference.count + remainingVotes - nextVoteCount
+          ) {
+            // current can be banished if the next vote is for them
+            const canBeBanishedNotice = document.createElement("div");
+            canBeBanishedNotice.textContent = `Hvis ${
+              nextVoter()?.name
+            } stemmer på ${current.name} er han/hun forvist`;
+            noticesContainer.appendChild(canBeBanishedNotice);
+          }
+        }
+      }
     }
   }
-  // work out notifications (num remaining votes, is someone out, is someone about to be out)
 }
 
 export function setupVotePage() {
-  // sync from fragment
-  state = deserialize(document.location.hash);
+  // sync from url
+  state = deserialize(document.location.search);
 
   document
-    .querySelector<HTMLDivElement>(".flex-container")
+    .querySelector<HTMLDivElement>("#tiles-container")
     ?.addEventListener("pointerdown", async (evt) =>
-      findTarget(evt, ".flex-container > div", async (target) => {
+      findTarget(evt, "#tiles-container > div", async (target) => {
         const voter = nextVoter();
         const name = nameFromTile(target as Tile);
         const recipient = state.find((item) => item.name === name);
         if (recipient && voter) {
-          recipient.votes += voter.votes;
           voter.votedFor = recipient.name;
+          console.log(
+            `player ${voter.name} cast ${voter.votes} votes for ${voter.votedFor}`
+          );
         }
         onStateChanged();
       })
     );
 
   document
-    .querySelector<HTMLDivElement>(".vote-tracker")
+    .querySelector<HTMLDivElement>("#vote-tracker")
     ?.addEventListener("pointerdown", async (evt) =>
-      findTarget(evt, ".vote-tracker > div", async (target) => {
+      findTarget(evt, "#vote-tracker > div", async (target) => {
         const voterName = target.querySelector(".voter")?.textContent;
         const voter = state.find((player) => player.name === voterName);
         if (voter) {

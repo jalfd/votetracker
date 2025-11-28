@@ -79,7 +79,37 @@ function onStateChanged() {
   }
   // update info panels
   // list cast votes (with undo button)
+  {
+    const voteStrings = state
+      .filter((player) => player.votedFor !== undefined)
+      .map((player) => `${player.name} stemte på ${player.votedFor}`).toSorted();
+    const voteTrackerContainer =
+      document.querySelector<HTMLDivElement>("#vote-tracker");
+    voteTrackerContainer?.replaceChildren();
+    for (const str of voteStrings) {
+      const root = document.createElement("div");
+      const text = document.createElement("span");
+      const tip = document.createElement("span");
+      text.textContent = str;
+      tip.textContent = "Slet?";
+      root.appendChild(text);
+      root.appendChild(tip);
+      voteTrackerContainer?.appendChild(root);
+      // todo: set up delete click event
+    }
+  }
   // list top voted
+  {
+    const voteCountArray = Object.entries(votesReceived).map(([name, count]) => ({name, count }));
+    const voteCountContainer =
+      document.querySelector<HTMLDivElement>("#vote-ranking");
+    voteCountContainer?.replaceChildren();
+    for (const {name, count} of voteCountArray.toSorted()) {
+      const item = document.createElement("div");
+      item.textContent = `${name}: ${count} stemmer`;
+      voteCountContainer?.appendChild(item);
+    }
+  }
   // work out notifications (num remaining votes, is someone out, is someone about to be out)
 }
 

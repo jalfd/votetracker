@@ -1,16 +1,16 @@
 import z from "zod";
 
-const stateSchema = z.record(
-  z.string(),
-  z.object({
-    votes: z.number().default(1),
-    votedFor: z.string().optional(),
-  })
-);
+export const playerSchema = z.object({
+  name: z.string(),
+  votes: z.number().default(1),
+  votedFor: z.string().optional(),
+});
+export const stateSchema = z.array(playerSchema);
 
-export type State = z.infer<typeof stateSchema>;
+export type Player = z.infer<typeof playerSchema>;
+export type Players = z.infer<typeof stateSchema>;
 
-export function serialize(state: State) {
+export function serialize(state: Players) {
   return btoa(JSON.stringify(state))
     .replaceAll("+", "-")
     .replaceAll("/", "_")
@@ -42,4 +42,19 @@ export function findTarget<T extends Event>(
   handler(target);
 }
 
-
+export function createTile(player: Player) {
+  const tile = document.createElement("div");
+  const tileName = document.createElement("h2");
+  const tileSub = document.createElement("h3");
+  tileName.textContent = player.name;
+  tileSub.textContent = "🗡";
+  tile.appendChild(tileName);
+  tile.appendChild(tileSub);
+  if (player.votes === 2) {
+    tile.classList.add("dagger");
+  }
+  if (player.votedFor !== undefined) {
+    tile.classList.add("voted");
+  }
+  return tile;
+}

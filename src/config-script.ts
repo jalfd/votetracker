@@ -1,4 +1,4 @@
-import { findTarget, serialize, type State } from "./common.js";
+import { createTile, findTarget, playerSchema, serialize, type Players } from "./common.js";
 import z from "zod";
 
 function parseTile(tile: HTMLDivElement) {
@@ -9,7 +9,7 @@ function parseTile(tile: HTMLDivElement) {
   return { name, nameElement, dagger };
 }
 function serializeFromDom() {
-  const state: State = {};
+  const state: Players = [];
   const tiles = document.querySelectorAll<HTMLDivElement>(
     "#tiles-container > div"
   );
@@ -17,7 +17,7 @@ function serializeFromDom() {
   for (const tile of Array.from(tiles)) {
     const { name, dagger } = parseTile(tile);
     console.log(`Found tile for ${name} with ${dagger ? 2 : 1} votes`);
-    state[name] = { votes: dagger ? 2 : 1 };
+    state.push({ name, votes: dagger ? 2 : 1 });
   }
 
   return serialize(state);
@@ -62,25 +62,24 @@ export function setupConfigPage() {
   const elem = document.getElementById("names-input") as HTMLTextAreaElement;
 
   const refreshTiles = () => {
-    const names = new Set(
-      elem.value
-        .split("\n")
-        .map((line) => line.trim())
-        .filter((line) => line.length !== 0)
-    );
+    const names = elem.value
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line.length !== 0);
+
+    const duplicateCheck = new Set(names);
+    for (const name of duplicateCheck) {
+      while (names.indexOf(name) !== names.lastIndexOf(name)) {
+        names.splice(names.lastIndexOf(name), 1);
+      }
+    }
+
     const tilesContainer = document.getElementById(
       "tiles-container"
     ) as HTMLDivElement;
     tilesContainer.replaceChildren();
     for (const name of names) {
-      const tile = document.createElement("div");
-      const tileName = document.createElement("h2");
-      const tileSub = document.createElement("h3");
-      tileName.textContent = name;
-      tileSub.textContent = "🗡";
-      tile.appendChild(tileName);
-      tile.appendChild(tileSub);
-      tilesContainer.appendChild(tile);
+      tilesContainer.appendChild(createTile(playerSchema.parse({name})));
     }
   };
 

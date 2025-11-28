@@ -19,13 +19,16 @@
         background-color: #32a852;
       }
       .flex-container > div {
-        background-color: #c9d1cb;
+        background-color: #beb7df;
         margin: 10px;
         padding: 20px;
         flex-basis: 200px;
       }
-      .flex-container > div:hover {
-        background-color: #e0cdf1;
+      .flex-container > div.voted {
+        background-color: #aba9bf;
+            }
+      .flex-container > div:not(.voted):hover {
+        background-color: #d4f2d2;
       }
       .info-container {
         background-color: #84e2b4;

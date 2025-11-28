@@ -60,3 +60,7 @@
         padding: 1em;
         background-color: #b3dd9f;
       }
+      textarea {
+        background-color: #A6D0BE;
+        border-style: none;
+      }

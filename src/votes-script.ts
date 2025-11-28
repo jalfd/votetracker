@@ -159,26 +159,12 @@ function onStateChanged() {
         noticesContainer.appendChild(isBanishedNotice);
       } else {
         const voteForWillBanish: string[] = [];
-        const canProtectFromBanishment: Record<string, string[]> = {};
 
         for (let i = 0; i < voteCountArray.length; ++i) {
           const current = voteCountArray[i]!;
           const reference = i === 0 ? voteCountArray[1]! : voteCountArray[0]!;
 
-          if (current.count > reference.count) {
-            // if I have more votes than anyone else we need to check who can *keep* me from banishment
-            // so I have a number of votes. Find people who can catch me now, but can't if nextVoteCount is wasted
-            const arrayWithoutMe = voteCountArray.toSpliced(i, 1);
-            const canSaveMe = arrayWithoutMe.filter(
-              (item) =>
-                item.count + remainingVotes - nextVoteCount >= current.count
-            );
-            if (canSaveMe.length !== 0) {
-              canProtectFromBanishment[current.name] = canSaveMe.map(
-                (item) => item.name
-              );
-            }
-          } else if (
+          if (
             current.count + nextVoteCount >
             reference.count + remainingVotes - nextVoteCount
           ) {
@@ -192,21 +178,6 @@ function onStateChanged() {
           notice.textContent = `Hvis ${
             nextVoter()?.name
           } stemmer på ${item} er han/hun forvist`;
-          noticesContainer.appendChild(notice);
-        }
-        for (const [banishee, unless] of Object.entries(
-          canProtectFromBanishment
-        )) {
-          const notice = document.createElement("div");
-          const prettyUnless =
-            unless.length === 1
-              ? unless[0]
-              : unless.slice(0, -1).join(", ") +
-                " eller " +
-                unless[unless.length - 1];
-          notice.textContent = `Hvis ${
-            nextVoter()?.name
-          } ikke stemmer på ${prettyUnless} er ${banishee} forvist`;
           noticesContainer.appendChild(notice);
         }
       }

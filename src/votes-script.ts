@@ -173,9 +173,11 @@ function onStateChanged() {
                 item.count + remainingVotes >= current.count &&
                 item.count + remainingVotes - nextVoteCount < current.count
             );
-            canProtectFromBanishment[current.name] = canSaveMe.map(
-              (item) => item.name
-            );
+            if (canSaveMe.length !== 0) {
+              canProtectFromBanishment[current.name] = canSaveMe.map(
+                (item) => item.name
+              );
+            }
           } else if (
             current.count + nextVoteCount >
             reference.count + remainingVotes - nextVoteCount

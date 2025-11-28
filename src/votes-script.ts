@@ -187,19 +187,18 @@ function onStateChanged() {
           }
         }
 
-        for (const item in voteForWillBanish) {
+        for (const item of voteForWillBanish) {
           const notice = document.createElement("div");
           notice.textContent = `Hvis ${
             nextVoter()?.name
           } stemmer på ${item} er han/hun forvist`;
           noticesContainer.appendChild(notice);
         }
-        for (const banishee in canProtectFromBanishment) {
+        for (const [banishee, unless] of Object.entries(canProtectFromBanishment)) {
           const notice = document.createElement("div");
-          const unless = canProtectFromBanishment[banishee]?.join(", ");
           notice.textContent = `Hvis ${
             nextVoter()?.name
-          } ikke stemmer på ${unless} er ${banishee} forvist`;
+          } ikke stemmer på ${unless.join(', ')} er ${banishee} forvist`;
           noticesContainer.appendChild(notice);
         }
       }

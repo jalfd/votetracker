@@ -76,6 +76,6 @@
         margin-bottom: 5px;
       }
 
-      #tiles-header {
+      h1:has(+ #tiles-container) {
         text-align: center;
       }

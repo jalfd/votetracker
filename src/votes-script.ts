@@ -151,7 +151,7 @@ function onStateChanged() {
   if (mostVotes !== undefined) {
     if (voteCountArray[1] !== undefined) {
       // if no one can catch up to mostVotes
-      if (voteCountArray[1].count + nextVoteCount < mostVotes.count) {
+      if (voteCountArray[1].count + remainingVotes < mostVotes.count) {
         // Someone is banished
         const isBanishedNotice = document.createElement("div");
         isBanishedNotice.textContent = `${mostVotes.name} er forvist`;

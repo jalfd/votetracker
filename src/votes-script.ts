@@ -172,7 +172,7 @@ function onStateChanged() {
             const canSaveMe = arrayWithoutMe.filter(
               (item) =>
                 item.count + remainingVotes >= current.count &&
-                item.count + remainingVotes - nextVoteCount < current.count
+                item.count + remainingVotes - nextVoteCount <= current.count
             );
             if (canSaveMe.length !== 0) {
               canProtectFromBanishment[current.name] = canSaveMe.map(

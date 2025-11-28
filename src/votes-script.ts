@@ -157,35 +157,63 @@ function onStateChanged() {
         isBanishedNotice.textContent = `${mostVotes.name} er forvist`;
         noticesContainer.appendChild(isBanishedNotice);
       } else {
-        // who can be banished if they get the next vote?
+        const voteForWillBanish: string[] = [];
+        const canProtectFromBanishment: Record<string, string[]> = {};
+
         for (let i = 0; i < voteCountArray.length; ++i) {
           const current = voteCountArray[i]!;
-          const reference = i === 0 ? voteCountArray[1] : voteCountArray[0]!;
-          if (
+          const reference = i === 0 ? voteCountArray[1]! : voteCountArray[0]!;
+
+          if (current.count > reference.count) {
+            // if I have more votes than anyone else we need to check who can *keep* me from banishment
+            // so I have a number of votes. Find people who can catch me now, but can't if nextVoteCount is wasted
+            const arrayWithoutMe = voteCountArray.toSpliced(i, 1);
+            const canSaveMe = arrayWithoutMe.filter(
+              (item) =>
+                item.count + remainingVotes >= current.count &&
+                item.count + remainingVotes - nextVoteCount < current.count
+            );
+            canProtectFromBanishment[current.name] = canSaveMe.map(
+              (item) => item.name
+            );
+          } else if (
             current.count + nextVoteCount >
             reference.count + remainingVotes - nextVoteCount
           ) {
-            // current can be banished if the next vote is for them
-            const canBeBanishedNotice = document.createElement("div");
-            canBeBanishedNotice.textContent = `Hvis ${
-              nextVoter()?.name
-            } stemmer på ${current.name} er han/hun forvist`;
-            noticesContainer.appendChild(canBeBanishedNotice);
+            // if I am tied or behind someone else, the question is whether I'll be banished if I get this vote
+            voteForWillBanish.push(current.name);
           }
+        }
+
+        for (const item in voteForWillBanish) {
+          const notice = document.createElement("div");
+          notice.textContent = `Hvis ${
+            nextVoter()?.name
+          } stemmer på ${item} er han/hun forvist`;
+          noticesContainer.appendChild(notice);
+        }
+        for (const banishee in canProtectFromBanishment) {
+          const notice = document.createElement("div");
+          const unless = canProtectFromBanishment[banishee]?.join(", ");
+          notice.textContent = `Hvis ${
+            nextVoter()?.name
+          } ikke stemmer på ${unless} er ${banishee} forvist`;
+          noticesContainer.appendChild(notice);
         }
       }
     }
   }
 
-  const tilesHeader = document.querySelector<HTMLHeadingElement>("#tiles-header");
+  const tilesHeader =
+    document.querySelector<HTMLHeadingElement>("#tiles-header");
   if (tilesHeader !== null) {
-  const next = nextVoter()?.name;
-  if (next === undefined) {
-    tilesHeader.textContent = "Alle har stemt";
-  } else {
-    tilesHeader.textContent = `Næste stemme: ${next}`;
+    const next = nextVoter()?.name;
+    if (next === undefined) {
+      tilesHeader.textContent = "Alle har stemt";
+    } else {
+      tilesHeader.textContent = `Næste stemme: ${next}`;
+    }
   }
-}
 }
 
 export function setupVotePage() {

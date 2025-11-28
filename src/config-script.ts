@@ -62,10 +62,16 @@ export function setupConfigPage() {
   const elem = document.getElementById("names-input") as HTMLTextAreaElement;
 
   const refreshTiles = () => {
-    const names = elem.value
+    let names = elem.value
       .split("\n")
       .map((line) => line.trim())
       .filter((line) => line.length !== 0);
+
+      let start = names.findIndex(name => name.includes('*'));
+      if (start == -1) {start = 0;}
+      const moveToEnd = names.slice(0, start);
+      names = names.slice(start).concat(moveToEnd);
+      names = names.map(name => name.replaceAll('*', ''));
 
     const duplicateCheck = new Set(names);
     for (const name of duplicateCheck) {

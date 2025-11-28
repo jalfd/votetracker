@@ -17,6 +17,7 @@
         flex-basis: 0;
         flex-grow: 1;
         align-items: flex-start;
+        align-content: flex-start;
       }
       #tiles-container > div {
         margin: 5px;

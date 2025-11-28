@@ -176,6 +176,16 @@ function onStateChanged() {
       }
     }
   }
+
+  const tilesHeader = document.querySelector<HTMLHeadingElement>("#tiles-header");
+  if (tilesHeader !== null) {
+  const next = nextVoter()?.name;
+  if (next === undefined) {
+    tilesHeader.textContent = "Alle har stemt";
+  } else {
+    tilesHeader.textContent = `Næste stemme: ${next}`;
+  }
+}
 }
 
 export function setupVotePage() {

@@ -8,6 +8,7 @@
       body {
         display: flex;
         background-color: #CFEBDF;
+        font-family: "Noto Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
       }
       #tiles-container {
         display: flex;
@@ -55,6 +56,9 @@
       #info-container > div > div {
         width: 100%;
       }
+      #info-container > div > div > div {
+        padding-bottom: 3px;
+      }
       #submit {
         text-align: center;
         padding: 1em;
@@ -63,4 +67,12 @@
       textarea {
         background-color: #A6D0BE;
         border-style: none;
+      }
+      h1 {
+        margin-top: 5px;
+        margin-bottom: 5px;
+      }
+
+      #tiles-header {
+        text-align: center;
       }

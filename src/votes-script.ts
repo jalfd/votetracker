@@ -116,9 +116,9 @@ function onStateChanged() {
   voteCountContainer?.replaceChildren();
   for (const { name, count } of voteCountArray) {
     if (count !== 0) {
-    const item = document.createElement("div");
-    item.textContent = `${name}: ${count} stemmer`;
-    voteCountContainer?.appendChild(item);
+      const item = document.createElement("div");
+      item.textContent = `${name}: ${count} stemmer`;
+      voteCountContainer?.appendChild(item);
     }
   }
 
@@ -174,11 +174,12 @@ function onStateChanged() {
         }
 
         for (const item of voteForWillBanish) {
-          const notice = document.createElement("div");
-          notice.textContent = `Hvis ${
-            nextVoter()?.name
-          } stemmer på ${item} er han/hun forvist`;
-          noticesContainer.appendChild(notice);
+          const voter = nextVoter()!.name;
+          if (voter !== item) {
+            const notice = document.createElement("div");
+            notice.textContent = `Hvis ${voter} stemmer på ${item} er han/hun forvist`;
+            noticesContainer.appendChild(notice);
+          }
         }
       }
     }
